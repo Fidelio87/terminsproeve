@@ -1,0 +1,27 @@
+{
+  "name": "terminsproeve",
+  "version": "1.0.0",
+  "description": "terminsproeve 2017",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fidelio87/magazine.git"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "RTS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fidelio87/magazine/issues"
+  },
+  "homepage": "https://github.com/Fidelio87/magazine#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}
