@@ -13,7 +13,25 @@ if (isset($_GET['logout'])) {
     redirect_to('index.php');
 }
 
+if (isset($_GET['page'])) {
+    $side_url = $db->real_escape_string($_GET['page']);
+} else {
+    $side_url = '';
+}
 
+$query  = "SELECT side_url, side_titel, side_indhold, kat_navn, side_include_filnavn
+            FROM sider 
+            LEFT JOIN kategorier ON sider.fk_kategori_id = kategorier.kat_id
+            LEFT JOIN side_includes ON sider.fk_side_include_id = side_includes.side_include_id
+            WHERE side_url = '$side_url' AND side_status = 1";
+$result = $db->query($query);
+$side    = $result->fetch_object();
+
+if (!$result) {
+    query_error($query, __LINE__, __FILE__);
+}
+
+$side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
 
 ?>
 
@@ -27,7 +45,11 @@ if (isset($_GET['logout'])) {
         <?php include 'includes/nav.inc.php'; ?>
 
         <!--    BREADCRUMBS-->
-<!--        TODO skal ikke vises på forsiden-->
+
+        <?php
+        //breadcrumb vises ikke på forsiden
+        if (isset($_GET['page']) && $_GET['page'] != '') {
+            ?>
         <div class="row">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
@@ -35,6 +57,9 @@ if (isset($_GET['logout'])) {
                 <li class="active">Data</li>
             </ol>
         </div>
+    <?php
+        }
+        ?>
 
         <!--    CONTENT-->
         <div class="row">
@@ -88,43 +113,14 @@ if (isset($_GET['logout'])) {
 
             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                 <div class="container-fluid">
-                    <div class="media">
-                        <div class="media-right pull-right">
-                            <a href="#">
-    <!--                            TODO husk link til artikelsortering-->
-                                <img class="media-object" src="img/car_cat.png" alt="se alle artikler vedr.">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h2 class="media-heading">Artikel titel</h2>
-                            <h6 class="text-muted">Fredag d. klamskldm 2002.20 af <a href="#">Forfatter</a></h6>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad blanditiis consectetur culpa
-                                dicta dolorem dolorum earum fuga illum impedit labore necessitatibus, nesciunt nisi
-                                perferendis reiciendis saepe ullam veritatis voluptatibus voluptatum.</p>
-                            <a class="alert-link" href="#">&dbkarow; Læs mere...</a>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="media">
-                        <div class="media-left pull-right">
-                            <a href="#">
-                                <img class="media-object" src="https://placehold.it/64x64" alt="">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h2 class="media-heading">Artikel titel</h2>
-                            <h6 class="text-muted">Fredag d. klamskldm 2002.20</h6>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad blanditiis consectetur culpa
-                                dicta dolorem dolorum earum fuga illum impedit labore necessitatibus, nesciunt nisi
-                                perferendis reiciendis saepe ullam veritatis voluptatibus voluptatum.</p>
-                            <a class="alert-link" href="#"> Læs mere...</a>
-                        </div>
-                    </div>
-
-                    <hr>
-
+                    <?php
+                    if (isset($side->side_include_filnavn)&&
+                        file_exists('pages' . DS . $side->side_include_filnavn)) {
+                        include 'pages' . DS . $side->side_include_filnavn;
+                    } else {
+                        echo 'Try again!';
+                    }
+                    ?>
                 </div>
             </div>
             <!--        SPONS-->

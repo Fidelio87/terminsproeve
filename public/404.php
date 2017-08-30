@@ -6,6 +6,15 @@
  * Time: 14:22
  */
 
+require_once '../config/config.php';
+
+$query  = 'SELECT navn FROM adresser LIMIT 1';
+$result = $db->query($query);
+$row    = $result->fetch_object();
+if (!$result) {
+    query_error($query, __LINE__, __FILE__);
+}
+
 ?>
 
 <!doctype html>
@@ -15,7 +24,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0,
     maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BBB-magasines - Side ikke fundet</title>
+    <title><?php echo $row->navn; ?>>- Side ikke fundet</title>
 </head>
 <body>
 
@@ -25,7 +34,7 @@
         <p>Side ikke fundet...</p>
         <p>
 <!--            TODO check redirection-->
-            <a href="index.php?page=" class="btn btn-primary btn-lg">Kom tilbage til forsiden</a>
+            <a href="index.php" class="btn btn-info btn-lg">Kom tilbage til forsiden</a>
         </p>
     </div>
 </div>
