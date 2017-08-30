@@ -263,7 +263,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Trebuchet MS", "Times New Roman", Times, serif;
+  font-family: "Verdana", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333333;
@@ -5024,7 +5024,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Trebuchet MS", "Times New Roman", Times, serif;
+  font-family: "Verdana", Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5142,7 +5142,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Trebuchet MS", "Times New Roman", Times, serif;
+  font-family: "Verdana", Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
