@@ -5,6 +5,11 @@
  * Date: 29/08/2017
  * Time: 13:09
  */
+
+if (isset($_GET['kategori_id'])) {
+    $kat_id = $_GET['kategori_id'];
+}
+
 ?>
 
 <nav class="navbar navbar-default">
@@ -18,18 +23,32 @@
             </div>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Forside</a></li>
-                    <li><a href="#">Forside</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
+                    <?php
+
+                    $query = "SELECT side_url, side_nav_label, fk_kategori_id
+                              FROM sider
+                              WHERE side_status = 1 AND side_nav_visning = 1
+                              ORDER BY side_nav_sortering";
+                    $result = $db->query($query);
+
+                    if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+                    while ($row = $result->fetch_object()) {
+                        ?>
+                        <li <?php if ($row->side_url == $side_url) { echo 'active'; } ?>>
+                            <a href="index.php?page=<?php echo $row->side_url; ?>">
+                                <?php echo $row->side_nav_label ?></a>
+                        </li>
+                    <?php
+                    }
+                    ?>
                 </ul>
         <!--            SEARCH BAR-->
                 <form method="post" class="navbar-form navbar-right" role="search">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Søg">
+                        <input type="text" class="form-control input-sm" placeholder="Søg">
                     </div>
-                    <button type="submit" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
+                    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search fa-fw"></i></button>
                 </form>
             </div><!-- /.navbar-collapse -->
         </nav>

@@ -115,9 +115,10 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                 <div class="container-fluid">
                     <?php
                     if (isset($side->side_include_filnavn)&&
-                        file_exists('pages' . DS . $side->side_include_filnavn)) {
-                        include 'pages' . DS . $side->side_include_filnavn;
+                        file_exists('pages/' . $side->side_include_filnavn)) {
+                        include 'pages/' . $side->side_include_filnavn;
                     } else {
+//                        TODO redirect 4040
                         echo 'Try again!';
                     }
                     ?>

@@ -6,6 +6,8 @@
  * Time: 10:36
  */
 
+
+
 $query = "SELECT artikel_id,
                 artikel_skrevet,
                 artikel_overskrift,
@@ -41,12 +43,12 @@ while ($row = $result->fetch_object()) {
         <div class="media-body">
             <h2 class="media-heading"><?php echo $row->artikel_overskrift; ?></h2>
             <h6 class="text-muted"><?php echo $row->artikel_skrevet; ?> af:
-                <a href="index.php?page=redaktion.php"><?php
+                <a href="index.php?page=redaktion"><?php
                     echo $row->bruger_fornavn . ' ' . $row->bruger_efternavn; ?></a>
             </h6>
             <i><?php echo $row->artikel_manchet; ?></i>
             <p><?php echo $row->kort_indhold; ?>...</p>
-            <a class="alert-link" href="index.php?page=artikler&id=<?php
+            <a class="alert-link" href="index.php?page=artikel&id=<?php
             echo $row->artikel_id; ?>">&dbkarow; Læs mere...</a>
         </div>
     </div>

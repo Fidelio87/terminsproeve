@@ -14,7 +14,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Terminsproeve 2017">
     <meta name="Samuel" content="3529588">
-    <title>Velkommen til </title>
+    <title><?php echo $side_titel; ?></title>
     <!--FA CDN-->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Compiled Bootstrap -->
