@@ -1,16 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 3529588
- * Date: 29/08/2017
- * Time: 13:35
- */
 
-/**
- * Function to display a bootstrap styled message
- * @param string $type : Part of class name that defines the color of the box. success || warning || danger etc.
- * @param string $msg : The text to display inside the box
- */
 function alert($type, $msg)
 {
     ?>
@@ -22,11 +11,6 @@ function alert($type, $msg)
     <?php
 }
 
-/**
- * Function to display debugging info when a connect to the db fails
- * @param int $line_number : The current line number where the function is runned. Use magic constant __LINE__
- * @param string $file_name : The current file where the function is runned. Use magic constant __FILE__
- */
 function connect_error($line_number, $file_name)
 {
     global $db;
@@ -41,12 +25,7 @@ function connect_error($line_number, $file_name)
     }
 }
 
-/**
- * Function to display debugging info when a query to the db fails
- * @param string $query : The query/sql that failed
- * @param int $line_number : The current line number where the function is runned. Use magic constant __LINE__
- * @param string $file_name : The current file where the function is runned. Use magic constant __FILE__
- */
+
 function query_error($query, $line_number, $file_name)
 {
     global $db;
@@ -62,7 +41,7 @@ function query_error($query, $line_number, $file_name)
         alert('danger', $message);
         $db->close();
     } else {
-        alert('danger', 'There was a technical error. Please contact us if this problem persists!');
+        alert('danger', 'Teknisk fejl!');
         $db->close();
     }
 }
@@ -84,8 +63,8 @@ function prettyprint($data, $prefix_string = '')
 function show_dev_info()
 {
     // If developer status is set to true, show all information from get/post/files/session/cookie
-//    if (DEV_STATUS)
-//    {
+    if (DEV_STATUS)
+    {
     echo '<br>';
     prettyprint($_GET, 'GET ');
     prettyprint($_POST, 'POST ');
@@ -93,8 +72,8 @@ function show_dev_info()
     prettyprint($_SESSION, 'SESSION ');
     prettyprint($_COOKIE, 'COOKIE ');
 
-//        print_r($side);
-//    }
+
+    }
 }
 
 /**
@@ -269,36 +248,34 @@ function fingerprint()
     return hash('sha256', $_SERVER['HTTP_USER_AGENT'] . '!Å%bpxP-ghQæØ#_(');
 }
 
+
 /**
- * Function to run on login
- * @param string $email : The typed e-mail address
+ * @param $brugernavn
  * @param $password
+ *
  * @return bool
- * @internal param string $password_ The typed password
  */
-function login($email, $password)
+function login($brugernavn, $password)
 {
-    // If one of the required fields is empty, show alert
-    if (empty($email) || empty($password)) {
-        alert('warning', 'All input fields are required!');
-    } // If all required fields is not empty, continue
-    else {
+    if (empty($brugernavn) || empty($password)) {
+        alert('warning', 'Alle input-felter skal være udfyldte!');
+    } else {
         global $db;
 
-        $email = $db->escape_string($email);
+        $brugernavn = $db->escape_string($brugernavn);
 
         // Select active user that matches the typed e-mail address
         $query =
             "SELECT 
-				user_id, user_name, user_email, user_password, role_access_level
+				bruger_id, bruger_brugernavn, bruger_password, rolle_niveau
 			FROM 
-				users
+				brugere
             INNER JOIN
-                roles ON role_id = fk_role_id
+                roller ON brugere.fk_rolle_id = roller.rolle_id
 			WHERE 
-				user_email = '$email' 
+				bruger_brugernavn = '$brugernavn' 
 			AND 
-				user_status = 1";
+				bruger_status = 1";
         $result = $db->query($query);
 
         // If result returns false, use the function query_error to show debugging info
@@ -306,25 +283,22 @@ function login($email, $password)
             query_error($query, __LINE__, __FILE__);
         }
 
-        // If a user with the typed email was found in the database, do this
         if ($result->num_rows == 1) {
             $row = $result->fetch_object();
 
-            // Check if the typed password matched the hashed password in the Database
-            if (password_verify($password, $row->user_password)) {
-                // Give the current session a new id before saving user information into it
+            if (password_verify($password, $row->bruger_password)) {
                 session_regenerate_id();
 
-                $_SESSION['user']['id']             = $row->user_id;
-                $_SESSION['user']['username']       = $row->user_name;
-                $_SESSION['user']['access_level']   = $row->role_access_level;
+                $_SESSION['bruger']['id']           = $row->bruger_id;
+                $_SESSION['bruger']['brugernavn']   = $row->bruger_brugernavn;
+                $_SESSION['bruger']['niveau']       = $row->rolle_niveau;
                 $_SESSION['fingerprint']            = fingerprint();
 
                 return true;
             } else {
-                alert('warning', 'Email and/or password not correct');
+                alert('warning', 'Password not correct');
             }
-        } else { // If no user with the typed email was found in the database, show this alert
+        } else {
             alert('warning', 'Email or password not correct');
         }
     }
@@ -336,7 +310,7 @@ function login($email, $password)
  */
 function logout()
 {
-    unset($_SESSION['user']);
+    unset($_SESSION['bruger']);
     unset($_SESSION['fingerprint']);
     unset($_SESSION['last_activity']);
     // Give the current session a new id before saving user information into it
@@ -349,7 +323,7 @@ function logout()
  */
 function is_admin()
 {
-    return $_SESSION['user']['access_level'] < 100 ? true : false;
+    return $_SESSION['user']['niveau'] < 1000 ? true : false;
 }
 
 /**
@@ -392,14 +366,10 @@ function check_last_activity()
  */
 function shorten_string($string, $chars)
 {
-    // Remove tags from string to avoid non-closed tags on cut
     $string = strip_tags($string);
 
-    // If string contains more characters than the amount to display, do this
     if (mb_strlen($string, 'utf8mb4') > $chars) {
-        // Find the last space within X characters
         $last_space = strrpos(substr($string, 0, $chars + 1), ' ');
-        // Cut string and add ... after the last found space
         $string = substr($string, 0, $last_space) . '&hellip;';
     }
     return $string;
@@ -460,3 +430,179 @@ function redirect_to(string $location = null)
         exit;
     }
 }
+
+
+function opret_bruger(
+    $brugernavn,
+    $fornavn,
+    $efternavn,
+    $beskrivelse,
+    $password,
+    $conf_password,
+    $tlf,
+    $email,
+    $rolle
+)
+{
+
+    global $db;
+//    global $manager;
+
+    if ($password != $conf_password) {
+        ?>
+        <p class="text-danger">Kodeordene skal være ens!</p>
+        <?php
+    } else {
+        //condition tlf tomt
+        if (empty($tlf)) {
+            $tlf = '12345678';
+        } else {
+            $tlf = $db->real_escape_string($tlf);
+        }
+        //condition beskrivelse tomt
+        if (empty($beskrivelse)) {
+            $beskrivelse = '';
+        } else {
+            $beskrivelse = $db->real_escape_string($beskrivelse);
+        }
+
+//        if (empty($img)) {
+//            $filnavn = 'placeholder.jpg';
+//        } else {
+//            $filnavn = time() . $img['name'];
+//        }
+//        COUNT QUERY
+        $query_count = "SELECT COUNT(bruger_email) AS antal
+                        FROM brugere
+                        WHERE bruger_email = '$email'";
+
+        $result_count = $db->query($query_count);
+        if (!$result_count) { query_error($query, __LINE__, __FILE__); }
+        $row_count    = $result_count->fetch_object();
+
+        //hvis bruger m identisk email
+        if ($row_count->antal > 0) {
+            ?>
+            <p class="text-warning">Email-adressen <?php echo $email; ?> er desværre optaget. Prøv en ny.</p>
+            <?php
+        } else {
+            //hvis rolle er valgt
+//            if (isset($rolle)) {
+//                $rolle_id = $rolle;
+//            } else {
+//                //ellers er id standard - journalist er 1
+//                $rolle_id = 1;
+//            } //.slut - rollevalg
+
+            //make password-hash
+            $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+
+            //opret insert-query
+            $query = "INSERT INTO brugere (bruger_brugernavn,
+                                            bruger_fornavn,
+                                            bruger_efternavn,
+                                            bruger_beskrivelse,
+                                            bruger_password,
+                                            bruger_tlf,
+                                            bruger_email,
+                                            fk_rolle_id) 
+                      VALUES ('$brugernavn',
+                              '$fornavn',
+                              '$efternavn',
+                              '$beskrivelse',
+                              '$password_hashed',
+                              $tlf,
+                              '$email',
+                              1)";
+            $result = $db->query($query);
+
+            if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+            ?>
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                Bruger blev oprettet med succes.<?php if (isset($rolle)) { ?> <a href="index.php?page=brugere">
+                    Klik her for at returnere til oversigten
+                </a>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+
+        } //.slut email validering
+    } //.slut password-validering
+} //.slut - function
+
+function rediger_bruger(
+    $id,
+    $brugernavn,
+    $fornavn,
+    $efternavn,
+    $beskrivelse,
+    $password,
+    $conf_password,
+    $tlf,
+    $email
+)
+{
+    global $db;
+
+    if ($password != $conf_password) {
+        ?>
+        <p class="text-warning">Password matcher ikke</p>
+        <?php
+    } else {
+        if (empty($tlf)) {
+            $tlf = 'NULL';
+        } else {
+            $tlf = $db->real_escape_string($tlf);
+        }
+
+        $query = "SELECT COUNT(bruger_email) AS antal
+                    FROM brugere
+                    WHERE bruger_email = '$email'
+                    AND bruger_id != $id";
+        $result = $db->query($query);
+        if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+        $row = $result->fetch_object();
+        if ($row->antal > 0) {
+            ?>
+            <p class="text-warning">Email er ikke ledig!</p>
+            <?php
+        } else {
+            if (!empty($password)) {
+                $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+                //sekvens til sql-statement
+                $password_sql = ", bruger_password = '$password_hashed'";
+            } else {
+                $password_sql = '';
+            }
+
+            if (empty($beskrivelse)) {
+                $beskrivelse_sql = ", bruger_beskrivelse = '$beskrivelse'";
+            } else {
+                $beskrivelse_sql = '';
+            }
+
+            $query = "UPDATE brugere
+                        SET bruger_brugernavn = '$brugernavn',
+                            bruger_fornavn = '$fornavn',
+                            bruger_efternavn = '$efternavn'
+                            $beskrivelse_sql
+                            $password_sql,
+                            bruger_tlf = $tlf,
+                            bruger_email = '$email'
+                        WHERE bruger_id = $id
+                        ";
+            $db->query($query);
+            ?>
+            <div class="row">
+                <p class="text-success">Brugeren er nu redigeret!</p>
+            </div>
+            <?php
+        } //.slut email-check
+    } //.slut password-check
+} //.slut funktion

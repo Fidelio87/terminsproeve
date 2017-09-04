@@ -44,11 +44,14 @@ if (isset($_GET['kategori_id'])) {
                     ?>
                 </ul>
         <!--            SEARCH BAR-->
+<!--                TODO implementér søgning-->
                 <form method="post" class="navbar-form navbar-right" role="search">
                     <div class="form-group">
                         <input type="text" class="form-control input-sm" placeholder="Søg">
                     </div>
                     <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search fa-fw"></i></button>
                 </form>
+                <a class="navbar-right pull-right" href="admin/login.php"><i class="fa fa-user-secret fa-fw"></i>
+                    Admin</a>
             </div><!-- /.navbar-collapse -->
         </nav>

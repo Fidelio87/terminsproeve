@@ -28,7 +28,7 @@ if (DEV_STATUS) {
     error_reporting(0);
 }
 
-require 'includes/functions.php';
+require '../includes/functions.php';
 
 if (isset($_SESSION['user']['id'])) {
     check_fingerprint();

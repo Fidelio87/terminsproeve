@@ -14,7 +14,8 @@ $kommm_navn = '';
 $komm_email = '';
 $komm_tekst = '';
 
-$query = "SELECT artikel_skrevet,
+$query = "SELECT DATE_FORMAT(artikel_skrevet, '%e. %b %Y kl. %H:%i') as skrevet_tid,
+                DATE_FORMAT(artikel_redigeret, '%e. %b %Y kl. %H:%i') as redigeret_tid,
                 artikel_overskrift,
                 artikel_manchet,
                 artikel_indhold,
@@ -31,6 +32,12 @@ if (!$result) {
     query_error($query, __LINE__, __FILE__);
 }
 
+if (isset($row->redigeret_tid)) {
+    $red_tid = ' (red: ' . $row->redigeret_tid . ')';
+} else {
+    $red_tid = '';
+}
+
 ?>
 
     <h2 class="text-lead"><?php echo $row->artikel_overskrift; ?></h2>
@@ -38,7 +45,7 @@ if (!$result) {
     <p><?php echo $row->artikel_indhold; ?></p>
     <br>
     <p class="text-muted">Af <?php echo $row->bruger_fornavn . ' ' . $row->bruger_efternavn; ?>, <?php
-        echo $row->artikel_skrevet; ?></p>
+        echo $row->skrevet_tid  . $red_tid; ?></p>
 <hr>
     <h3>Kommentarer</h3>
     <?php

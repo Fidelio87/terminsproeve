@@ -10,3 +10,5 @@ gen
 /node_modules/
 /bower_components/
 /public/img/
+/db/
+!/public/admin/
