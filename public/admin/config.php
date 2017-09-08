@@ -15,9 +15,13 @@ defined('DB_USER') ? null : define('DB_USER', 'root');
 defined('DB_PASS') ? null : define('DB_PASS', '');
 defined('DB_NAME') ? null : define('DB_NAME', 'bbb_magasin');
 
-defined('DEV_STATUS') ? null : define('DEV_STATUS', false);
+defined('DEV_STATUS') ? null : define('DEV_STATUS', true);
 
 defined('CONN_ERROR') ? null : define('CONN_ERROR', 'FEJL I FORBINDELSE TIL DATABASE!');
+
+defined('HASH_COST') ? null : define('HASH_COST', ["cost" => 11]);
+// max billedestørelse ca. 3MB
+defined('MAX_IMG_SIZE') ? null : define('MAX_IMG_SIZE', 3123635);
 
 $root = '';
 $include_path = 'public' . DS . 'includes' . DS;
@@ -27,6 +31,7 @@ if (DEV_STATUS) {
 } else {
     error_reporting(0);
 }
+
 
 require '../includes/functions.php';
 

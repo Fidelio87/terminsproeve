@@ -33,7 +33,6 @@ if (!$result) {
         <h1>Ups!</h1>
         <p>Side ikke fundet...</p>
         <p>
-<!--            TODO check redirection-->
             <a href="index.php" class="btn btn-info btn-lg">Kom tilbage til forsiden</a>
         </p>
     </div>

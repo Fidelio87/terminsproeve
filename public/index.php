@@ -20,7 +20,7 @@ if (isset($_GET['page'])) {
 }
 
 $query  = "SELECT side_url, side_titel, side_indhold, kat_navn, side_include_filnavn
-            FROM sider 
+            FROM sider
             LEFT JOIN kategorier ON sider.fk_kategori_id = kategorier.kat_id
             LEFT JOIN side_includes ON sider.fk_side_include_id = side_includes.side_include_id
             WHERE side_url = '$side_url' AND side_status = 1";
@@ -136,7 +136,6 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
             <!--            PLACEHOLDERS-->
             </div>
         </div>
-<!--        TODO DEBUG INFO FJERN VED LANCERING-->
         <div class="row bg-warning">
             <div class="container-fluid">
                 <?php show_dev_info(); ?>

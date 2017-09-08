@@ -62,15 +62,16 @@ function prettyprint($data, $prefix_string = '')
 
 function show_dev_info()
 {
-    // If developer status is set to true, show all information from get/post/files/session/cookie
-    if (DEV_STATUS)
-    {
-    echo '<br>';
-    prettyprint($_GET, 'GET ');
-    prettyprint($_POST, 'POST ');
-    prettyprint($_FILES, 'FILES ');
-    prettyprint($_SESSION, 'SESSION ');
-    prettyprint($_COOKIE, 'COOKIE ');
+    // If developer status is set to true, show all information from get/post/files/session/cookie/constants
+    if (DEV_STATUS) {
+        echo '<br>';
+        prettyprint($_GET, 'GET ');
+        prettyprint($_POST, 'POST ');
+        prettyprint($_FILES, 'FILES ');
+        prettyprint($_SESSION, 'SESSION ');
+        prettyprint($_COOKIE, 'COOKIE ');
+        $consts = get_defined_constants(true);
+        prettyprint($consts['user'], 'CONSTANTS ');
 
 
     }
@@ -323,7 +324,19 @@ function logout()
  */
 function is_admin()
 {
-    return $_SESSION['user']['niveau'] < 1000 ? true : false;
+    return $_SESSION['bruger']['niveau'] <= 1000 ? true : false;
+}
+
+/**
+ * @param $redir | string
+ */
+function checkAccess(string $redir = 'index.php')
+{
+    global $sider;
+    global $side;
+    if ($_SESSION['bruger']['niveau'] < $sider[$side]['niveau']) {
+        redirect_to($redir);
+    }
 }
 
 /**
@@ -441,12 +454,13 @@ function opret_bruger(
     $conf_password,
     $tlf,
     $email,
-    $rolle
+    $fil,
+    $rolle = 1
 )
 {
 
     global $db;
-//    global $manager;
+    global $manager;
 
     if ($password != $conf_password) {
         ?>
@@ -454,10 +468,10 @@ function opret_bruger(
         <?php
     } else {
         //condition tlf tomt
-        if (empty($tlf)) {
-            $tlf = '12345678';
-        } else {
+        if (!empty($tlf) && intval($tlf)) {
             $tlf = $db->real_escape_string($tlf);
+        } else {
+            $tlf = 0000000;
         }
         //condition beskrivelse tomt
         if (empty($beskrivelse)) {
@@ -466,15 +480,10 @@ function opret_bruger(
             $beskrivelse = $db->real_escape_string($beskrivelse);
         }
 
-//        if (empty($img)) {
-//            $filnavn = 'placeholder.jpg';
-//        } else {
-//            $filnavn = time() . $img['name'];
-//        }
 //        COUNT QUERY
-        $query_count = "SELECT COUNT(bruger_email) AS antal
+        $query_count = "SELECT COUNT(bruger_brugernavn) AS antal
                         FROM brugere
-                        WHERE bruger_email = '$email'";
+                        WHERE bruger_brugernavn = '$brugernavn'";
 
         $result_count = $db->query($query_count);
         if (!$result_count) { query_error($query, __LINE__, __FILE__); }
@@ -483,19 +492,44 @@ function opret_bruger(
         //hvis bruger m identisk email
         if ($row_count->antal > 0) {
             ?>
-            <p class="text-warning">Email-adressen <?php echo $email; ?> er desværre optaget. Prøv en ny.</p>
+            <p class="text-warning">Brugernavnet <?php echo $brugernavn; ?> er desværre optaget. Prøv et nyt.</p>
             <?php
         } else {
-            //hvis rolle er valgt
-//            if (isset($rolle)) {
-//                $rolle_id = $rolle;
-//            } else {
-//                //ellers er id standard - journalist er 1
-//                $rolle_id = 1;
-//            } //.slut - rollevalg
+            //mappehenvisninger
+            // TODO relative mapper - gør det absolut?
+            $img_dir = '../img/personer/';
+            $img_dir_thumbs = '../img/personer/thumbs/';
 
+            //check om billede er valgt og ikke er tomt
+            if (isset($fil) && !empty($fil['tmp_name'])) {
+                    //denne variable er vigtig
+                    //bliver brugt i queryen
+                    $filnavn = time() . '_' . $db->real_escape_string($fil['name']);
+
+                    $img = $manager->make($fil['tmp_name']);
+
+                    //gemmer alm billede
+                    $img->resize(768, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+
+                    $img->save($img_dir . $filnavn);
+
+                    //gemmer thumbnail billede
+                    $img->resize(88, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+
+                    $img->save($img_dir_thumbs . $filnavn);
+            } else {
+                //TODO fix fysisk placeholder billede
+                $filnavn = 'placeholder.jpg';
+            }
+            
             //make password-hash
-            $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+            $password_hashed = password_hash($password, PASSWORD_DEFAULT, HASH_COST);
 
             //opret insert-query
             $query = "INSERT INTO brugere (bruger_brugernavn,
@@ -505,6 +539,7 @@ function opret_bruger(
                                             bruger_password,
                                             bruger_tlf,
                                             bruger_email,
+                                            bruger_img,
                                             fk_rolle_id) 
                       VALUES ('$brugernavn',
                               '$fornavn',
@@ -513,7 +548,8 @@ function opret_bruger(
                               '$password_hashed',
                               $tlf,
                               '$email',
-                              1)";
+                              '$filnavn',
+                              $rolle)";
             $result = $db->query($query);
 
             if (!$result) { query_error($query, __LINE__, __FILE__); }
@@ -522,15 +558,10 @@ function opret_bruger(
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                Bruger blev oprettet med succes.<?php if (isset($rolle)) { ?> <a href="index.php?page=brugere">
-                    Klik her for at returnere til oversigten
-                </a>
-                    <?php
-                }
-                ?>
+                Bruger blev oprettet med succes.<a href="index.php?page=brugere">
+                    Klik her for at returnere til oversigten</a>
             </div>
             <?php
-
         } //.slut email validering
     } //.slut password-validering
 } //.slut - function
@@ -606,3 +637,19 @@ function rediger_bruger(
         } //.slut email-check
     } //.slut password-check
 } //.slut funktion
+
+/**
+ * Password Hash Cost Calculator
+ *
+ * Set the ideal time that you want a password_hash() call to take and this
+ * script will keep testing until it finds the ideal cost value and let you
+ * know what to set it to when it has finished
+ */
+// Milliseconds that a hash should take (ideally)
+
+function benchmark($password, $cost=4)
+{
+    $start = microtime(true);
+    password_hash($password, PASSWORD_BCRYPT, ['cost'=>$cost]);
+    return microtime(true) - $start;
+}

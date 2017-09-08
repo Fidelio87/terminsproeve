@@ -2,9 +2,12 @@
 
 require_once 'config.php';
 
-//use Intervention\Image\ImageManager;
-//
-//$manager = new ImageManager(array('driver' => 'gd'));
+//IMPORTS
+require '../../resources/vendor/autoload.php';
+
+use Intervention\Image\ImageManager;
+
+$manager = new ImageManager(array('driver' => 'gd'));
 
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -12,7 +15,8 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
-if (!isset($_SESSION['bruger']['niveau']) || (isset($_SESSION['bruger']['niveau']) && $_SESSION['bruger']['niveau'] < 200)) {
+if (!isset($_SESSION['bruger']['niveau']) || (isset($_SESSION['bruger']['niveau']) &&
+                                              $_SESSION['bruger']['niveau'] < 200)) {
     header('Location: login.php');
     exit;
 }
