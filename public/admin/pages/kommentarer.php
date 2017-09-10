@@ -1,8 +1,6 @@
 <?php
 
-if ($_SESSION['bruger']['niveau'] < $sider[$side]['niveau']) {
-    redirect_to('index.php');
-}
+checkAccess();
 
 // Kode til sletning af kommentarer
 
@@ -41,7 +39,7 @@ if (isset($_GET['slet_id'])) {
         <tbody>
         <?php
         $query = "SELECT kommentar_id,
-                          DATE_FORMAT(kommentar_oprettet, '%e. %b %Y kl. %H:%i') as tid,
+                          DATE_FORMAT(kommentar_oprettet, '%e. %b %Y [%H:%i]') as tid,
                           kommentar_brugernavn,
                           kommentar_email,
                           SUBSTR(kommentar_tekst, 1, 25) as kort_tekst,
@@ -59,12 +57,12 @@ if (isset($_GET['slet_id'])) {
                 ?>
                 <tr>
                     <td align="right"><?php echo $kommentar->tid; ?></td>
-                    <td><?php echo $kommentar->kommentar_id ?></td>
+                    <td><?php echo $kommentar->kommentar_id; ?></td>
                     <td><?php echo $kommentar->kommentar_brugernavn; ?></td>
                     <td><?php echo $kommentar->kommentar_email; ?></td>
                     <td><?php echo $kommentar->kort_tekst; ?></td>
-                    <td><a href="<?php echo 'index.php?page=artikler'; ?>"><?php
-                            echo $kommentar->kort_overskrift; ?></a></td>
+                    <td><a href="index.php?page=artikler#<?php echo $kommentar->artikel_id; ?>"><?php
+                            echo $kommentar->kort_overskrift; ?>...</a></td>
 
                     <td><a href="index.php?page=rediger-kommentar&id=<?php echo $kommentar->kommentar_id; ?>"
                            class="btn btn-warning btn-xs" title="Redigér kommentar">

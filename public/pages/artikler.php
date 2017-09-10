@@ -14,7 +14,7 @@ if (isset($_GET['kategori'])) {
 }
 
 $query = "SELECT artikel_id,
-                        artikel_skrevet,
+                        DATE_FORMAT(artikel_skrevet, '%e. %b %Y kl. %H:%i') AS artikel_skrevet_dato,
                         artikel_overskrift,
                         artikel_manchet,
                         SUBSTR(artikel_indhold, 1, 200) as kort_indhold,
@@ -23,7 +23,8 @@ $query = "SELECT artikel_id,
                 FROM artikler
                 INNER JOIN brugere ON artikler.fk_bruger_id = brugere.bruger_id
                 WHERE artikel_status = 1 AND fk_kategori_id = '$kat_id'
-                ORDER BY artikel_skrevet";
+                ORDER BY artikel_skrevet
+                LIMIT 3";
 
 $result = $db->query($query);
 
@@ -36,7 +37,7 @@ while ($row = $result->fetch_object()) {
     <div class="media">
         <div class="media-body">
             <h2 class="media-heading"><?php echo $row->artikel_overskrift; ?></h2>
-            <h6 class="text-muted"><?php echo $row->artikel_skrevet; ?> af:
+            <h6 class="text-muted"><?php echo $row->artikel_skrevet_dato; ?> af:
                 <a href="index.php?page=redaktion"><?php
                     echo $row->bruger_fornavn . ' ' . $row->bruger_efternavn; ?></a>
             </h6>

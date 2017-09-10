@@ -12,7 +12,7 @@ module.exports = function(grunt) {
                 files: {
                     //compiling src files into public assets
                     "./public/css/frontend.css":"./resources/css/frontend.less",
-                    "./public/css/backend.css":"./resources/css/backend.less"
+                    "./public/admin/css/backend.css":"./resources/css/backend.less"
                 }
             }
         },

@@ -96,10 +96,10 @@ $sider = [
                                  'vis'          => 0,
                                  'niveau' => 1000
             ],
-            'Reklammer'		=> ['ikon'          => 'dollar',
+            'reklamer'        => ['ikon'        => 'dollar',
                                 'titel'         => 'Reklamer',
                                 'vis'           => 1,
-                                'niveau' => 1000,
+                                'niveau'        => 1000,
                                 'aktiv_paa'     => ['reklamer', 'opret-reklame', 'rediger-reklame']
             ],
             'opret-reklame'  => ['ikon'          => 'dollar',
@@ -109,7 +109,7 @@ $sider = [
             'rediger-reklame'=> ['ikon'          => 'dollar',
                                 'titel'         => 'Rediger reklame',
                                 'vis'           => 0,
-                                'niveau' => 1000
+                                'niveau'        => 1000
             ]
 ];
 
@@ -126,13 +126,11 @@ if (isset($sider[$side]['titel'])) {
 <head>
     <meta charset="UTF-8">
     <title>Admin - BBB Magasin - <?php echo $side_titel; ?></title>
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
           crossorigin="anonymous">
     <!--    <link rel="stylesheet" href="../assets/font_awesome/css/font-awesome.min.css">-->
-    <link rel="stylesheet" href="../css/backend.css">
+    <link rel="stylesheet" href="css/backend.css">
     <link rel="stylesheet" href="css/sb-admin-2.min.css">
 </head>
 <body>
