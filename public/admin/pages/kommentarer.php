@@ -46,7 +46,8 @@ if (isset($_GET['slet_id'])) {
                           artikel_id,
                           SUBSTR(artikel_overskrift, 1, 25) as kort_overskrift
                   FROM kommentarer
-                  INNER JOIN artikler ON kommentarer.fk_artikel_id = artikler.artikel_id";
+                  INNER JOIN artikler ON kommentarer.fk_artikel_id = artikler.artikel_id
+                  ORDER BY fk_artikel_id";
         $result = $db->query($query);
         if (!$result) { query_error($query, __LINE__, __FILE__); }
 

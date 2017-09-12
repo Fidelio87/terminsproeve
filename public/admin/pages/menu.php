@@ -8,6 +8,37 @@
 
 checkAccess();
 
+if (isset($_GET['flyt'])) {
+    $id = $_GET['id'];
+
+    $query  = 'SELECT side_nav_sortering FROM sider WHERE side_id = ' . $id;
+    $result = $db->query($query);
+    $row    = $result->fetch_object();
+    if ( ! $result) {
+        query_error($query, __LINE__, __FILE__);
+    }
+
+    $menu_sort = $row->side_nav_sortering;
+
+    if ($_GET['flyt'] == 'ned') {
+        $ny_sort = $menu_sort + 1;
+    } else {
+        $ny_sort = $menu_sort - 1;
+    }
+
+    $query = "UPDATE sider SET side_nav_sortering = $menu_sort
+              WHERE side_nav_sortering = $ny_sort";
+    $result = $db->query($query);
+    if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+    $query = "UPDATE sider SET side_nav_sortering = $ny_sort
+              WHERE side_id = $id";
+    $result = $db->query($query);
+    if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+    redirect_to('index.php?page=' . $side);
+}
+
 ?>
 
 <h1 class="page-header">
