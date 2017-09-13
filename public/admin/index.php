@@ -85,13 +85,13 @@ $sider = [
                                 'niveau' => 1000,
                                 'aktiv_paa'     => ['ansvar']
             ],
-            'kommentarer'		=> ['ikon'          => 'pencil',
+            'kommentarer'		=> ['ikon'          => 'comments-o',
                                 'titel'         => 'Kommentarer',
                                 'vis'           => 1,
                                 'niveau' => 1000,
                                 'aktiv_paa'     => ['kommentarer', 'rediger-kommentar']
             ],
-            'rediger-kommentar'=> ['ikon'         => 'pencil',
+            'rediger-kommentar'=> ['ikon'         => 'comments-o',
                                  'titel'        => 'Rediger kommentar',
                                  'vis'          => 0,
                                  'niveau' => 1000
@@ -110,14 +110,26 @@ $sider = [
                                 'titel'         => 'Rediger reklame',
                                 'vis'           => 0,
                                 'niveau'        => 1000
+            ],
+            'rater'         => ['ikon'          => 'bullhorn',
+                                'titel'         => 'Reklame-rater',
+                                'vis'           => 1,
+                                'niveau'        => 1000,
+                                'aktiv_paa'     => ['rater, opret-rate, rediger-rate']
+            ],
+            'opret-rate'    => ['ikon'     => 'bullhorn',
+                                'titel'         => 'Opret rate',
+                                'vis'           => 0,
+                                'niveau'        => 1000
+            ],
+            'rediger-rate'  => ['ikon'     => 'bullhorn',
+                                'titel'         => 'Rediger rate',
+                                'vis'           => 0,
+                                'niveau'        => 1000
             ]
 ];
 
-if (isset($sider[$side]['titel'])) {
-    $side_titel = $sider[$side]['titel'];
-} else {
-    $side_titel = 'HTTP 404';
-}
+$side_titel = isset($sider[$side]['titel']) ? $sider[$side]['titel'] : 'HTTP 404';
 
 ?>
 

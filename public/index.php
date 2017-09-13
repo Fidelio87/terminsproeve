@@ -127,12 +127,27 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
             <!--        SPONS-->
             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                 <h4>Sponsorer</h4>
-                <img src="http://lorempixel.com/120/80/" class="thumbnail" alt="lorem">
-                <img src="http://lorempixel.com/120/80/" class="thumbnail" alt="lorem">
-                <img src="http://lorempixel.com/120/80/" class="thumbnail" alt="lorem">
-                <img src="http://lorempixel.com/120/80/" class="thumbnail" alt="lorem">
+                <?php
+
+                if (isset($kat_id)) {
+                    $reklame_sql = "WHERE fk_kategori_id = " . $kat_id;
+                } else {
+                    $reklame_sql = "ORDER BY rand() LIMIT 5";
+                }
+
+                $query = "SELECT reklame_navn, reklame_img FROM reklamer $reklame_sql";
+                $result = $db->query($query);
+                if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+                while ($row = $result->fetch_object()) {
+                    ?>
+                    <a href="#" class="thumbnail"><img src="img/ads/<?php echo $row->reklame_img; ?>" class="thumbnail" alt="<?php
+                        echo $row->reklame_navn; ?>"></a>
+                <?php
+                }
+                ?>
                 <hr>
-                <a href="#" class="alert-link"><i class="fa fa-question-circle fa-fw"></i> Din annonce her?</a>
+                <a href="index.php?page=sponsor-info" class="alert-link"><i class="fa fa-question-circle fa-fw"></i> Din annonce her?</a>
             <!--            PLACEHOLDERS-->
             </div>
         </div>

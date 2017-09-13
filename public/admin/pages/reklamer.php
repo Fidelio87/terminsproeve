@@ -45,8 +45,9 @@ if (isset($_GET['slet_id'])) {
             <th>Billede</th>
             <th>Kategori</th>
             <th class="icon"></th>
-            <th class="icon"><a href="index.php?page=opret-reklame"
-                                        class="btn btn-success"><i class="fa fa-plus-square fa-lg fa-fw"></i></a></th>
+            <th class="icon"><a href="index.php?page=opret-reklame" class="btn btn-success" title="Opret reklame">
+                    <i class="fa fa-plus-square fa-lg fa-fw"></i>
+                </a></th>
         </tr>
         </thead>
         <tbody>
@@ -69,11 +70,13 @@ if (isset($_GET['slet_id'])) {
                 ?>
             <tr>
                 <td><?php echo $row->reklame_navn; ?></td>
-                <td><img src="../img/ads/<?php echo $row->reklame_img; ?>" alt="" width="100"></td>
+                <td><img src="../img/ads/<?php echo $row->reklame_img; ?>" alt="reklame-for-sponsor" width="100"></td>
                 <td><?php echo $row->kat_navn; ?></td>
-                <td><a href="index.php?page=<?php echo $side; ?>&id=<?php
-                    echo $row->reklame_id; ?>" title="Redigér reklame"><i class="fa fa-edit fa-lg fa-fw"></i></a></td>
-                <td><a href="index.php?page=<?php echo $side; ?>&slet_id=<?php
+                <td><a href="index.php?page=rediger-reklame&id=<?php
+                    echo $row->reklame_id; ?>" title="Redigér reklame" disabled>
+                        <i class="fa fa-edit fa-lg fa-fw"></i></a></td>
+                <td>
+                    <a href="index.php?page=<?php echo $side; ?>&slet_id=<?php
                     echo $row->reklame_id; ?>" onclick="return confirm('Er du sikker på at du vil slette reklamen')"
                        title="Slet reklame"><i class="fa fa-trash-o fa-lg fa-fw"></i></a></td>
             </tr>
