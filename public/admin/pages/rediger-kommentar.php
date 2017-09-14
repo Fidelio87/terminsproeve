@@ -6,9 +6,7 @@
  * Time: 09:12
  */
 
-if ($_SESSION['bruger']['niveau'] < $sider[$side]['niveau']) {
-    redirect_to('index.php');
-}
+checkAccess();
 
 if (isset($_GET['id'])) {
     $kommentar_id = $_GET['id'];

@@ -80,12 +80,22 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
 
                 <hr>
                 <!--NYHEDSBREV-->
+
+                <?php
+
+                if (isset($_POST['sub_news']) && !empty($_POST['nyhedsbrev_email'])) {
+                    echo '<div class="row">';
+                    behandl_nyhedsbrev($_POST['nyhedsbrev_email']);
+                    echo '</div>';
+                }
+
+                ?>
                 <div class="row">
-                    <form method="post" action="#">
+                    <form method="post">
                         <div class="form-group">
                             <div class="input-group">
                                 <label for="newsletter">Nyhedsbrev</label>
-                                <input type="email" class="form-control" placeholder="email">
+                                <input type="email" name="nyhedsbrev_email" class="form-control" placeholder="email">
                             </div>
                         </div>
                         <button type="submit" name="sub_news" class="btn btn-primary">
@@ -141,13 +151,15 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
 
                 while ($row = $result->fetch_object()) {
                     ?>
-                    <a href="#" class="thumbnail"><img src="img/ads/<?php echo $row->reklame_img; ?>" class="thumbnail" alt="<?php
+                    <a href="#" class="thumbnail"><img src="img/ads/<?php
+                        echo $row->reklame_img; ?>" class="thumbnail" alt="<?php
                         echo $row->reklame_navn; ?>"></a>
                 <?php
                 }
                 ?>
                 <hr>
-                <a href="index.php?page=sponsor-info" class="alert-link"><i class="fa fa-question-circle fa-fw"></i> Din annonce her?</a>
+                <a href="index.php?page=sponsor-info" class="alert-link">
+                    <i class="fa fa-question-circle fa-fw"></i> Din annonce her?</a>
             <!--            PLACEHOLDERS-->
             </div>
         </div>

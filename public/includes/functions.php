@@ -653,3 +653,60 @@ function benchmark($password, $cost=4)
     password_hash($password, PASSWORD_BCRYPT, ['cost'=>$cost]);
     return microtime(true) - $start;
 }
+
+
+/**
+ * @param $filename
+ *
+ * @return bool
+ */
+function is_animated($filename)
+{
+    $filecontents = file_get_contents($filename);
+
+    $str_loc = 0;
+    $count = 0;
+    while ($count < 2) { // There is no point in continuing after we find a 2nd frame
+
+        $where1 = strpos($filecontents, "\x00\x21\xF9\x04", $str_loc);
+        if (!$where1) {
+            break;
+        } else {
+            $str_loc = $where1 + 1;
+            $where2 = strpos($filecontents, "\x00\x2C", $str_loc);
+            if (!$where2) {
+                break;
+            } else {
+                if ($where1 + 8 == $where2) {
+                    ++$count;
+                }
+                $str_loc = $where2 + 1;
+            }
+        }
+    }
+    return $count > 1;
+}
+
+
+/**
+ * @param string $email
+ */
+function behandl_nyhedsbrev(string $email)
+{
+    global $db;
+
+    $esc_email = $db->real_escape_string($email);
+    $query = "SELECT tilmelding_id FROM tilmeldinger WHERE tilmelding_email = '$esc_email'";
+    $result = $db->query($query);
+    $antal = $result->num_rows;
+
+    if ($antal == 1) {
+        $query = "DELETE FROM tilmeldinger WHERE tilmelding_email = '$esc_email'";
+        $db->query($query);
+        alert('success', 'Du er nu afmeldt nyhedsbrevet');
+    } else {
+        $query = "INSERT INTO tilmeldinger (tilmelding_email) VALUES ('$esc_email')";
+        $db->query($query);
+        alert('success', 'Du er nu tilmeldt nyhedsbrevet');
+    }
+}
