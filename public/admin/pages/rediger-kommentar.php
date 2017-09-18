@@ -30,8 +30,8 @@ $tekst        = '';
 <form action="" method="post">
     <?php
     $brugernavn     = $row->kommentar_brugernavn;
-    $email        = $row->kommentar_email;
-    $tekst        = $row->kommentar_tekst;
+    $email          = $row->kommentar_email;
+    $tekst          = $row->kommentar_tekst;
 
     if (isset($_POST['submit_rediger'])) {
         if (empty($_POST['brugernavn']) ||

@@ -126,6 +126,18 @@ $sider = [
                                 'titel'         => 'Rediger rate',
                                 'vis'           => 0,
                                 'niveau'        => 1000
+            ],
+            'tilmeldinger'  => ['ikon'     => 'list',
+                                'titel'         => 'Tilmeldte nyhedsbrev',
+                                'vis'           => 1,
+                                'niveau'        => 1000,
+                                'aktiv_paa'     => ['tilmeldinger']
+            ],
+            'rediger-info'  => ['ikon'     => 'info-circle',
+                                'titel'         => 'Rediger info',
+                                'vis'           => 1,
+                                'niveau'        => 1000,
+                                'aktiv_paa'     => ['rediger-info']
             ]
 ];
 

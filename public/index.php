@@ -71,9 +71,30 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                             <h3 class="panel-title">Mest læste</h3>
                         </div>
                         <ul class="list-group">
-                            <li class="list-group-item"><a href="#">LINK</a></li>
-                            <li class="list-group-item"><a href="#">LINK</a></li>
-                            <li class="list-group-item"><a href="#">LINK</a></li>
+                            <?php
+
+                            $query = "SELECT artikel_id, 
+                                              artikel_status, 
+                                              artikel_overskrift,
+                                              SUBSTR(artikel_overskrift, 1, 25) as kort_overskrift, 
+                                              artikel_visninger
+                                      FROM artikler
+                                      WHERE artikel_status = 1
+                                      ORDER BY artikel_visninger DESC
+                                      LIMIT 5";
+                            $result = $db->query($query);
+                            if (!$result) { query_error($query, __LINE__, __FILE__); }
+
+                            while ($row = $result->fetch_object()) {
+                                ?>
+                                <li class="list-group-item small">
+                                    <a href="index.php?page=artikel&id=<?php echo $row->artikel_id; ?>" title="<?php echo $row->artikel_overskrift; ?>"><?php
+                                        echo $row->kort_overskrift; ?>...</a>
+                                </li>
+                            <?php
+                            }
+                            ?>
+
                         </ul>
                     </div>
                 </div>
@@ -101,7 +122,6 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                         <button type="submit" name="sub_news" class="btn btn-primary">
                             <i class="fa fa-send-o fa-fw"></i> Tilmeld/afmeld
                         </button>
-                        <!--                            TODO alert here-->
                     </form>
                 </div>
 
@@ -111,9 +131,33 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                     <div class="panel panel-info">
                         <div class="panel-heading">Arkivet</div>
                         <ul class="list-group">
-                            <li class="list-group-item"><a href="#">LINK</a></li>
-                            <li class="list-group-item"><a href="#">LINK</a></li>
-                            <li class="list-group-item"><a href="#">LINK</a></li>
+                            <?php
+
+                            $query = 'SELECT artikel_id,
+                                              artikel_status,
+                                              artikel_overskrift,
+                                              SUBSTR(artikel_overskrift, 1, 25) as kort_overskrift,
+                                              artikel_visninger
+                                      FROM artikler
+                                      WHERE artikel_status = 1
+                                      ORDER BY artikel_oprettet DESC
+                                      LIMIT 5';
+                            $result = $db->query($query);
+                            if (!$result) {
+                                query_error($query, __LINE__, __FILE__);
+                            }
+
+                            while ($row = $result->fetch_object()) {
+                                ?>
+                                <li class="list-group-item small">
+                                    <a href="index.php?page=artikel&id=<?php echo $row->artikel_id; ?>" title="<?php
+                                    echo $row->artikel_overskrift; ?>"><?php
+                                        echo $row->kort_overskrift; ?>...</a>
+                                </li>
+                                <?php
+                            }
+                            ?>
+
                         </ul>
                     </div>
                 </div>

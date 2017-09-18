@@ -14,16 +14,19 @@ if (isset($_GET['kategori'])) {
 }
 
 $query = "SELECT artikel_id,
-                        DATE_FORMAT(artikel_skrevet, '%e. %b %Y kl. %H:%i') AS artikel_skrevet_dato,
-                        artikel_overskrift,
-                        artikel_manchet,
-                        SUBSTR(artikel_indhold, 1, 200) as kort_indhold,
-                        bruger_fornavn,
-                        bruger_efternavn
+                    DATE_FORMAT(artikel_skrevet, '%e. %b %Y kl. %H:%i') AS artikel_skrevet_dato,
+                    artikel_overskrift,
+                    artikel_manchet,
+                    SUBSTR(artikel_indhold, 1, 200) as kort_indhold,
+                    artikel_visninger,
+                    bruger_fornavn,
+                    bruger_efternavn,
+                    (SELECT COUNT(kommentar_id) FROM kommentarer 
+                      WHERE fk_artikel_id = artikel_id)  as kommentar_antal
                 FROM artikler
                 INNER JOIN brugere ON artikler.fk_bruger_id = brugere.bruger_id
                 WHERE artikel_status = 1 AND fk_kategori_id = '$kat_id'
-                ORDER BY artikel_skrevet
+                ORDER BY artikel_visninger DESC
                 LIMIT 3";
 
 $result = $db->query($query);
@@ -46,8 +49,25 @@ while ($row = $result->fetch_object()) {
             <div class="well">
                 <a class="alert-link" href="index.php?page=artikel&id=<?php
                 echo $row->artikel_id; ?>">&dbkarow; Læs mere...</a> -
-<!--                TODO tæl antal kommentar mm.-->
-                <span class="text-info">Læst XX gange</span> - <span class="text-info"> XX kommentarer</span>
+                <span class="text-info">Læst
+                    <?php
+//                    TODO simplify conditionals
+                    if ($row->artikel_visninger == 1) {
+                        echo $row->artikel_visninger . ' gang';
+                    } else {
+                        echo $row->artikel_visninger . ' gange';
+                    }
+                    ?></span> - <span class="text-info">
+                    
+                    <?php
+                    if ($row->kommentar_antal == 1) {
+                        echo $row->kommentar_antal . ' kommentar';
+                    } else {
+                        echo $row->kommentar_antal . ' kommentarer';
+                    }
+                    ?>
+                    
+                    </span>
             </div>
         </div>
     </div>

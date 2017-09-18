@@ -693,6 +693,7 @@ function is_animated($filename)
  */
 function behandl_nyhedsbrev(string $email)
 {
+//    TODO sanitize email
     global $db;
 
     $esc_email = $db->real_escape_string($email);
@@ -708,5 +709,53 @@ function behandl_nyhedsbrev(string $email)
         $query = "INSERT INTO tilmeldinger (tilmelding_email) VALUES ('$esc_email')";
         $db->query($query);
         alert('success', 'Du er nu tilmeldt nyhedsbrevet');
+    }
+}
+
+/**
+ * @param int $artikel_id
+ */
+function set_artikel_visning(int $artikel_id)
+{
+    global $db;
+    $query = "UPDATE artikler SET artikel_visninger = artikel_visninger + 1  WHERE artikel_id = $artikel_id";
+    $result = $db->query($query);
+
+    if (!$result) { query_error($query, __LINE__, __FILE__); }
+}
+
+function set_log(string $type, string $description, int $access_level)
+{
+    global $db;
+
+    switch ($type)
+    {
+        case 'indsæt':
+            $event_type_id = 1;
+            break;
+        case 'opdater':
+            $event_type_id = 2;
+            break;
+        case 'slet':
+            $event_type_id = 3;
+            break;
+        default:
+            $event_type_id = 4;
+    }
+
+    $description	= $db->real_escape_string($description);
+    $access_level	= intval($access_level);
+    $user_id		= intval($_SESSION['bruger']['id']);
+
+    $query =
+        "INSERT INTO 
+			events (event_description, event_access_level_required, fk_user_id, fk_event_type_id) 
+		VALUES 
+			('$description', $access_level, $user_id, $event_type_id)";
+    $result = $db->query($query);
+
+    if (!$result)
+    {
+        query_error($query, __LINE__, __FILE__);
     }
 }

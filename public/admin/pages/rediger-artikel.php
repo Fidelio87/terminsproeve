@@ -6,9 +6,7 @@
  * Time: 09:12
  */
 
-if ($_SESSION['bruger']['niveau'] < $sider[$side]['niveau']) {
-    redirect_to('index.php');
-}
+checkAccess();
 
 if (isset($_GET['id'])) {
     $artikel_id = $_GET['id'];
@@ -36,7 +34,7 @@ $row = $result->fetch_object();
 
 
 <h1 class="page-header">
-    <i class="fa fa-<?php echo $sider['kommentarer']['ikon']; ?>"></i><?php echo $sider['kommentarer']['titel']; ?>
+    <i class="fa fa-<?php echo $sider[$side]['ikon']; ?>"></i> <?php echo $sider['artikler']['titel']; ?>
     <small>Rediger artikel</small>
 </h1>
 
@@ -62,8 +60,7 @@ $row = $result->fetch_object();
             $fk_bruger      = $db->real_escape_string($_POST['bruger']);
             $fk_kategori    = $db->real_escape_string($_POST['kategori']);
             
-            $query = "UPDATE artikler SET artikel_redigeret = NOW(),
-                                          artikel_overskrift = '$overskrift',
+            $query = "UPDATE artikler SET artikel_overskrift = '$overskrift',
                                           artikel_indhold = '$indhold',
                                           fk_bruger_id = $fk_bruger,
                                           fk_kategori_id = $fk_kategori
@@ -83,10 +80,10 @@ $row = $result->fetch_object();
             <option hidden value="">Vælg her...</option>
             <?php
             $query = "SELECT bruger_id,
-                                  bruger_status,
-                                  bruger_fornavn,
-                                  bruger_efternavn,
-                                  fk_rolle_id
+                              bruger_status,
+                              bruger_fornavn,
+                              bruger_efternavn,
+                              fk_rolle_id
                           FROM brugere
                           $fk_bruger_sql
                           ORDER BY bruger_id";

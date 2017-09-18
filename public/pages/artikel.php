@@ -8,6 +8,8 @@
 
 if (isset($_GET["id"])) {
     $art_id = intval($_GET["id"]);
+
+    set_artikel_visning($art_id);
 }
 
 $kommm_navn = '';
@@ -101,6 +103,7 @@ if (isset($row->redigeret_tid)) {
                 <label for="">Din email</label>
                 <input type="email" class="form-control" value="" name="email" required>
                 <label for="">Kommentar</label>
+<!--                TODO max input 300 karakterer -->
                 <textarea cols="30" rows="10" class="form-control" name="tekst"></textarea>
             </div>
             <div class="form-group">
