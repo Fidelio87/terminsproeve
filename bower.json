@@ -1,6 +1,7 @@
 {
   "name": "magazine",
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "bootstrap-datepicker": "~1.7.1"
   }
 }

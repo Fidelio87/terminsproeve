@@ -9,7 +9,7 @@
 checkAccess();
 
 if (isset($_GET['slet_id'])) {
-    $id = intval($_GET['slet_id']);
+    $id = (int)$_GET['slet_id'];
 
     $query = "DELETE FROM tilmeldinger WHERE tilmelding_id = " . $id;
     $db->query($query);
@@ -34,12 +34,13 @@ if (isset($_GET['slet_id'])) {
         </thead>
         <tbody>
         <?php
-        $query = "SELECT * FROM tilmeldinger";
+        $query = 'SELECT * FROM tilmeldinger ORDER by tilmelding_id';
         $result = $db->query($query);
         if (!$result) { query_error($query, __LINE__, __FILE__); }
 
 
         $antal_tilmeldinger = $result->num_rows;
+
         if ($antal_tilmeldinger > 0) {
             while ($row = $result->fetch_object()) {
                 ?>
