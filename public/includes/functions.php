@@ -701,7 +701,7 @@ function behandl_nyhedsbrev(string $email)
     $result = $db->query($query);
     $antal = $result->num_rows;
 
-    if ($antal == 1) {
+    if ($antal === 1) {
         $query = "DELETE FROM tilmeldinger WHERE tilmelding_email = '$esc_email'";
         $db->query($query);
         alert('success', 'Du er nu afmeldt nyhedsbrevet');
@@ -728,8 +728,7 @@ function set_log(string $type, string $description, int $access_level)
 {
     global $db;
 
-    switch ($type)
-    {
+    switch ($type) {
         case 'indsæt':
             $event_type_id = 1;
             break;
@@ -743,19 +742,17 @@ function set_log(string $type, string $description, int $access_level)
             $event_type_id = 4;
     }
 
-    $description	= $db->real_escape_string($description);
-    $access_level	= intval($access_level);
-    $user_id		= intval($_SESSION['bruger']['id']);
+    $description    = $db->real_escape_string($description);
+    $user_id        = (int)$_SESSION['bruger']['id'];
 
     $query =
         "INSERT INTO 
-			events (event_description, event_access_level_required, fk_user_id, fk_event_type_id) 
+			events () 
 		VALUES 
 			('$description', $access_level, $user_id, $event_type_id)";
     $result = $db->query($query);
 
-    if (!$result)
-    {
+    if (!$result) {
         query_error($query, __LINE__, __FILE__);
     }
 }

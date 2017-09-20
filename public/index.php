@@ -13,13 +13,9 @@ if (isset($_GET['logout'])) {
     redirect_to('index.php');
 }
 
-if (isset($_GET['page'])) {
-    $side_url = $db->real_escape_string($_GET['page']);
-} else {
-    $side_url = '';
-}
+$side_url = isset($_GET['page']) ? $db->real_escape_string($_GET['page']) : '';
 
-$query  = "SELECT side_url, side_titel, side_indhold, kat_navn, side_include_filnavn
+$query  = "SELECT side_url, side_titel, side_nav_label, side_indhold, kat_navn, side_include_filnavn
             FROM sider
             LEFT JOIN kategorier ON sider.fk_kategori_id = kategorier.kat_id
             LEFT JOIN side_includes ON sider.fk_side_include_id = side_includes.side_include_id
@@ -44,20 +40,46 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
 
         <?php include 'includes/nav.inc.php'; ?>
 
-        <!--    BREADCRUMBS-->
+        <!--    BREADCRUMB-->
 
         <?php
         //breadcrumb vises ikke på forsiden
-        if (isset($_GET['page']) && $_GET['page'] != '') {
+        if (isset($_GET['page']) && $_GET['page'] !== '') {
             ?>
-        <div class="row">
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Library</a></li>
-                <li class="active">Data</li>
-            </ol>
-        </div>
-    <?php
+            <div class="row">
+                <ol class="breadcrumb">
+                    <li><a href="index.php?page=">Forside</a></li>
+                    <?php
+                    if ($_GET['page'] === 'artikler') {
+                        if (!empty($_GET['kategori'])) {
+                            $kat_id = $_GET['kategori'];
+                            $query = 'SELECT * FROM kategorier WHERE kat_id = ' . $kat_id;
+                            $result = $db->query($query);
+                            if (!$result) { query_error($query, __LINE__, __FILE__); }
+                            $row = $result->fetch_object();
+                        ?>
+                            <li><a href="index.php?page=<?php echo $side_url; ?>&kategori=<?php
+                                echo $row->kat_id; ?>"><?php echo $row->kat_navn; ?></a></li>
+                            <?php
+                        } else {
+                            $kat_id = 1;
+                            $query = 'SELECT * FROM kategorier WHERE kat_id = ' . $kat_id;
+                            $result = $db->query($query);
+                            if (!$result) { query_error($query, __LINE__, __FILE__); }
+                            $row = $result->fetch_object();
+                            ?>
+                            <li><a href="index.php?page="><?php echo $row->kat_navn; ?></a></li>
+                            <?php
+                        }
+                    } else {
+                        ?>
+                        <li><a href="index.php?page=<?php echo $side_url; ?>"><?php echo $side_titel; ?></a></li>
+                    <?php
+                    }
+                    ?>
+                </ol>
+            </div>
+            <?php
         }
         ?>
 
@@ -73,7 +95,7 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                         <ul class="list-group">
                             <?php
 
-                            $query = "SELECT artikel_id, 
+                            $query = 'SELECT artikel_id, 
                                               artikel_status, 
                                               artikel_overskrift,
                                               SUBSTR(artikel_overskrift, 1, 25) as kort_overskrift, 
@@ -81,14 +103,15 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                                       FROM artikler
                                       WHERE artikel_status = 1
                                       ORDER BY artikel_visninger DESC
-                                      LIMIT 5";
+                                      LIMIT 5';
                             $result = $db->query($query);
                             if (!$result) { query_error($query, __LINE__, __FILE__); }
 
                             while ($row = $result->fetch_object()) {
                                 ?>
                                 <li class="list-group-item small">
-                                    <a href="index.php?page=artikel&id=<?php echo $row->artikel_id; ?>" title="<?php echo $row->artikel_overskrift; ?>"><?php
+                                    <a href="index.php?page=artikel&id=<?php echo $row->artikel_id; ?>" title="<?php
+                                    echo $row->artikel_overskrift; ?>"><?php
                                         echo $row->kort_overskrift; ?>...</a>
                                 </li>
                             <?php
@@ -184,9 +207,9 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                 <?php
 
                 if (isset($kat_id)) {
-                    $reklame_sql = "WHERE fk_kategori_id = " . $kat_id;
+                    $reklame_sql = 'WHERE fk_kategori_id = ' . $kat_id;
                 } else {
-                    $reklame_sql = "ORDER BY rand() LIMIT 5";
+                    $reklame_sql = 'ORDER BY rand() LIMIT 5';
                 }
 
                 $query = "SELECT reklame_navn, reklame_img FROM reklamer $reklame_sql";
@@ -204,7 +227,6 @@ $side_titel = isset($side) ? $side->side_titel : 'HTTP 404';
                 <hr>
                 <a href="index.php?page=sponsor-info" class="alert-link">
                     <i class="fa fa-question-circle fa-fw"></i> Din annonce her?</a>
-            <!--            PLACEHOLDERS-->
             </div>
         </div>
         <div class="row bg-warning">
