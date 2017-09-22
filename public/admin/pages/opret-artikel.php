@@ -134,9 +134,9 @@ if (isset($_POST['submit_artikel'])) {
     </div>
 
     <div class="form-group">
-        <label for="indhold" class="control-label">Indhold <span class="text-muted">Valgfrit</span>:</label>
-<!--        TODO CK-editor-->
-        <textarea class="form-control" name="indhold"><?php echo $lipsum; ?></textarea>
+        <label for="indhold" class="control-label">Indhold</label>
+        <textarea class="form-control " name="indhold" id="ck_indhold"><?php echo $lipsum; ?></textarea>
+
     </div>
 
     <button class="btn btn-success" type="submit" name="submit_artikel">

@@ -7,7 +7,7 @@
  */
 
 if (isset($_GET["id"])) {
-    $art_id = intval($_GET["id"]);
+    $art_id = (int)$_GET['id'];
 
     set_artikel_visning($art_id);
 }
@@ -79,18 +79,22 @@ if (isset($row->redigeret_tid)) {
 
 
     if (isset($_POST['submit_kommentar'])) {
-        $komm_navn = $db->real_escape_string($_POST['navn']);
-        $komm_email = $db->real_escape_string($_POST['email']);
-        $komm_tekst = $db->real_escape_string($_POST['tekst']);
+        if (strlen($_POST['tekst']) > 300) {
+            alert('danger', 'Din kommentar må max være 300 karakterer lang');
+        } else {
+            $komm_navn = $db->real_escape_string($_POST['navn']);
+            $komm_email = $db->real_escape_string($_POST['email']);
+            $komm_tekst = $db->real_escape_string($_POST['tekst']);
 
-        $query = "INSERT INTO kommentarer (kommentar_brugernavn, kommentar_email, kommentar_tekst, fk_artikel_id) 
+            $query = "INSERT INTO kommentarer (kommentar_brugernavn, kommentar_email, kommentar_tekst, fk_artikel_id) 
               VALUES ('$komm_navn', '$komm_email', '$komm_tekst', $art_id)";
-        $result = $db->query($query);
-        if (!$result) { query_error($query, __LINE__, __FILE__); }
+            $result = $db->query($query);
+            if (!$result) { query_error($query, __LINE__, __FILE__); }
 
-        alert('success', 'Kommentar oprettet');
+            alert('success', 'Kommentar oprettet');
 
-        redirect_to('index.php?page=artikel&id=' . $art_id);
+            redirect_to('index.php?page=artikel&id=' . $art_id);
+        }
     }
 
     ?>
@@ -103,8 +107,8 @@ if (isset($row->redigeret_tid)) {
                 <label for="">Din email</label>
                 <input type="email" class="form-control" value="" name="email" required>
                 <label for="">Kommentar</label>
-<!--                TODO max input 300 karakterer -->
-                <textarea cols="30" rows="10" class="form-control" name="tekst"></textarea>
+                <textarea id="kommentar" cols="30" rows="10" class="form-control" name="tekst" aria-describedby="inputHelpBlock"></textarea>
+                <span id="helpBlock" class="help-block"></span>
             </div>
             <div class="form-group">
                 <div class="col-sm-8">

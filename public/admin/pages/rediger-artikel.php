@@ -140,9 +140,8 @@ $row = $result->fetch_object();
     </div>
 
     <div class="form-group">
-        <label for="indhold" class="control-label">Indhold <span class="text-muted">Valgfrit</span>:</label>
-        <!--        TODO CK-editor-->
-        <textarea class="form-control" name="indhold"><?php
+        <label for="indhold" class="control-label">Indhold</label>
+        <textarea class="form-control" name="indhold" id="ck_indhold"><?php
             echo $row->artikel_indhold; ?></textarea>
     </div>
 

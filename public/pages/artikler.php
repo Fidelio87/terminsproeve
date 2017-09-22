@@ -45,7 +45,7 @@ while ($row = $result->fetch_object()) {
                     echo $row->bruger_fornavn . ' ' . $row->bruger_efternavn; ?></a>
             </h6>
             <i><?php echo $row->artikel_manchet; ?></i>
-            <p><?php echo $row->kort_indhold; ?>...</p>
+            <?php echo $row->kort_indhold; ?>...
             <div class="well">
                 <a class="alert-link" href="index.php?page=artikel&id=<?php
                 echo $row->artikel_id; ?>">&dbkarow; Læs mere...</a> -

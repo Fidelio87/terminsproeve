@@ -156,6 +156,10 @@ $side_titel = isset($sider[$side]['titel']) ? $sider[$side]['titel'] : 'HTTP 404
     <!--    <link rel="stylesheet" href="../assets/font_awesome/css/font-awesome.min.css">-->
     <link rel="stylesheet" href="css/backend.css">
     <link rel="stylesheet" href="css/sb-admin-2.min.css">
+<!--    CKEDITOR-->
+    <script src="../../resources/vendor/ckeditor/ckeditor/ckeditor.js"></script>
+
+    <link rel="stylesheet" href="../../resources/vendor/ckeditor/ckeditor/styles.js">
 </head>
 <body>
 
@@ -243,6 +247,25 @@ $side_titel = isset($sider[$side]['titel']) ? $sider[$side]['titel'] : 'HTTP 404
                 <div class="row">
                     <?php show_dev_info(); ?>
                 </div>
+<!--                CKEDITOR-replace script-->
+                <script>
+
+                    CKEDITOR.replace('ck_indhold', {
+                        'language' : 'da',
+                        'uiColor' : '#fefefe',
+                        toolbarGroups: [
+                            {"name":"basicstyles","groups":["basicstyles"]},
+                            {"name":"links","groups":["links"]},
+                            {"name":"paragraph","groups":["list","blocks"]},
+                            {"name":"document","groups":["mode"]},
+                            {"name":"insert","groups":["insert"]},
+                            {"name":"styles","groups":["styles"]}
+                        ],
+                        // Remove the redundant buttons from toolbar groups defined above.
+                        removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+                    });
+
+                </script>
             </div>
 <!--            .page-wrapper-->
         </div>

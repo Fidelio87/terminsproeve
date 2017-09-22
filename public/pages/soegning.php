@@ -151,7 +151,7 @@ $result_soeg = $db->query($query_soeg);
 
 if (!$result_soeg) { query_error($query_soeg, __LINE__, __FILE__); }
 
-$row_count = $result->num_rows;
+$row_count = $result_soeg->num_rows;
 
 if ($row_count > 0) {
     alert('success', 'Vi fandt <b>' . $row_count . '</b> resultater på din søgning!');

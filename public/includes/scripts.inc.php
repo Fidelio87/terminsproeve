@@ -23,3 +23,19 @@
         format: 'yyyy-mm-dd'
     });
 </script>
+
+<!--script der checker hvor mange karakter brugeren har tilbage-->
+<!--med kommentar-->
+<script type="text/javascript">
+    $('#kommentar').keyup(function () {
+        var max = 300 - $(this).val().length;
+        if (max < 0) {
+            $('#kommentar').css({'color':'red'});
+            max = 0;
+        } else {
+            $('#kommentar').css({'color':'inherit'});
+        }
+        $('#helpBlock').text('Tegn tilbage: ' + max);
+
+    });
+</script>
